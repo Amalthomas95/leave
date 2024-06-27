@@ -1,38 +1,33 @@
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface User {
+  username: string;
+  password: string;
+  email: string;
+  role: 'admin' | 'employee';
+}
 
 interface AuthState {
   isAuthenticated: boolean;
-  userRole: string | null;
+  user: User | null;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  userRole: null,
+  user: null,
 };
-
-type LoginPayload = { username: string, password: string };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state: AuthState, action: PayloadAction<LoginPayload>) => {
-      const { username, password } = action.payload;
-      if (username === 'admin' && password === 'admin') {
-        state.isAuthenticated = true;
-        state.userRole = 'admin';
-      } else if (username === 'employee' && password === 'employee') {
-        state.isAuthenticated = true;
-        state.userRole = 'employee';
-      } else {
-        state.isAuthenticated = false;
-        state.userRole = null;
-      }
+    login: (state: AuthState, action: PayloadAction<User>) => {
+      state.isAuthenticated = true;
+      state.user = action.payload;
     },
     logout: (state: AuthState) => {
       state.isAuthenticated = false;
-      state.userRole = null;
+      state.user = null;
     },
   },
 });

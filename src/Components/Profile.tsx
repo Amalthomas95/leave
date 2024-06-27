@@ -1,27 +1,42 @@
 import React from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-
-const mockEmployeeData = {
-    name: 'User',
-    position: 'Software Engineer',
-    department: 'Engineering',
-};
+import { useSelector } from 'react-redux';
+import { RootState } from '../Redux/store';
+import { Container, Table } from 'react-bootstrap';
 
 const Profile: React.FC = () => {
+    const leaveApplications = useSelector((state: RootState) => state.leave.leaveApplications);
+
+    const getStatusColor = (status: string): string => {
+        switch (status.toLowerCase()) {
+            case 'approved':
+                return 'text-success';
+            case 'rejected':
+                return 'text-danger';
+            case 'pending':
+            default:
+                return 'text-primary';
+        }
+    };
+
     return (
-        <Container className="mt-5">
-            <Row className="mb-4 justify-content-md-center">
-                <Col md={6}>
-                    <Card className="p-3" style={{ borderRadius: '8px',width:'350px' }}>
-                        <Card.Body>
-                            <Card.Title>Employee Profile</Card.Title> <br />
-                            <Card.Text><strong>Name:</strong> {mockEmployeeData.name}</Card.Text>
-                            <Card.Text><strong>Position:</strong> {mockEmployeeData.position}</Card.Text>
-                            <Card.Text><strong>Department:</strong> {mockEmployeeData.department}</Card.Text>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
+        <Container className="mt-4">
+            <h4 style={{textAlign:'center'}} className="mb-4">Employee Leave Applications</h4>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    {leaveApplications.map(application => (
+                        <tr key={application.id}>
+                            <td>{application.name}</td>
+                            <td className={getStatusColor(application.status)}>{application.status}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
         </Container>
     );
 };

@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { addLeaveApplication } from '../Features/leave/leaveslice';
 
 const validationSchema = Yup.object({
+    name: Yup.string().required('Name is required'),
     leaveType: Yup.string().required('Leave type is required'),
     startDate: Yup.date().required('Start date is required'),
     endDate: Yup.date().required('End date is required'),
@@ -17,10 +18,10 @@ const LeaveApplicationForm: React.FC = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const dispatch = useDispatch();
 
-    const handleSubmit = (values: { leaveType: string, startDate: string, endDate: string, reason: string }, { resetForm }: { resetForm: () => void }) => {
+    const handleSubmit = (values: { name: string, leaveType: string, startDate: string, endDate: string, reason: string }, { resetForm }: { resetForm: () => void }) => {
         const newLeaveApplication = {
             id: Date.now(), 
-            name: 'User', 
+            name: values.name, 
             leaveType: values.leaveType,
             startDate: values.startDate,
             endDate: values.endDate,
@@ -39,12 +40,18 @@ const LeaveApplicationForm: React.FC = () => {
         <Container>
             <h4 style={{ textAlign: 'center' }}>Leave Application</h4>
             <Formik
-                initialValues={{ leaveType: '', startDate: '', endDate: '', reason: '' }}
+                initialValues={{ name: '', leaveType: '', startDate: '', endDate: '', reason: '' }}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
                 {({ errors, touched }) => (
                     <Form>
+                        <BootstrapForm.Group controlId="name" className="mb-3">
+                            <BootstrapForm.Label>Name</BootstrapForm.Label>
+                            <Field name="name" as={BootstrapForm.Control} />
+                            <ErrorMessage name="name" component="div" className="text-danger" />
+                        </BootstrapForm.Group>
+
                         <BootstrapForm.Group controlId="leaveType" className="mb-3">
                             <BootstrapForm.Label>Leave Type</BootstrapForm.Label>
                             <Field name="leaveType" as={BootstrapForm.Control} />
